@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # By Genokolar 2011/02/07
-
+mount -o remount rw /system
 # read conf
 if [ -e /system/etc/enhanced.conf ]
 then

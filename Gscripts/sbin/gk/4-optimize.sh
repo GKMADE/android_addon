@@ -1,5 +1,6 @@
 #!/system/bin/sh
 # By Genokolar 2011/02/07
+mount -o remount rw /system
 if [ -d /system/etc/optimize-run ]
 then
 busybox rm -rf /system/etc/optimize-run

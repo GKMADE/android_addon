@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # By Genokolar 2011/02/07
-
+mount -o remount rw /system
 # recovery / backup / optimize / app2sd / data2ext timing
 sleep 60
 busybox rm -f /system/etc/closeswap

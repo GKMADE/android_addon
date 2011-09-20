@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # By Genokolar 2011/02/07
-
+mount -o remount rw /system
 # read conf
 if [ -e /system/etc/enhanced.conf ]
 then
@@ -32,12 +32,14 @@ fi
 
 
 # swap on
-if cat /proc/meminfo|busybox grep "SwapTotal"|busybox grep -q " 0 kB"
+if ! cat /proc/swaps |busybox grep -q /dev/block/$SDSWAP 
+then
+if ! cat /proc/swaps |busybox grep -q $SWAPADD
 then
   if [ -e /dev/block/$SDSWAP ]
   then
   busybox swapon /dev/block/$SDSWAP
-    if ! cat /proc/meminfo|busybox grep "SwapTotal"|busybox grep -q " 0 kB"
+    if cat /proc/swaps |busybox grep -q /dev/block/$SDSWAP 
     then
       busybox mkdir /system/etc/swap-run
       echo `busybox date +%F" "%T` Open SWAP with partition... >> /system/log.txt
@@ -51,7 +53,7 @@ then
     busybox mkswap $SWAPADD/swap.file 1>/dev/null
     busybox swapon $SWAPADD/swap.file 1>/dev/null
     busybox sysctl -w vm.swappiness=$SWAPPINESS
-      if ! cat /proc/meminfo|busybox grep "SwapTotal"|busybox grep -q " 0 kB"
+      if cat /proc/swaps |busybox grep -q $SWAPADD
       then
         busybox mkdir /system/etc/swap-run
         echo `busybox date +%F" "%T` Open SWAP with $SWAPADD/swap.file... >> /system/log.txt
@@ -70,7 +72,7 @@ then
       else
       echo SD-EXT分区没有正确挂载，请先正确挂载SD-EXT分区
       fi
-      if ! cat /proc/meminfo|busybox grep "SwapTotal"|busybox grep -q " 0 kB"
+      if cat /proc/swaps |busybox grep -q $SWAPADD
       then
         busybox mkdir /system/etc/swap-run
         echo `busybox date +%F" "%T` Open SWAP with new creat $SWAPADD/swap.file... >> /system/log.txt
@@ -81,8 +83,9 @@ then
     fi
   fi
 
+
 # swap off
-elif ! cat /proc/meminfo|busybox grep "SwapTotal"|busybox grep -q " 0 kB"
+elif [ -e /system/etc/closeswap ]
 then
   if [ -e /dev/block/$SDSWAP ]
   then
@@ -103,5 +106,6 @@ else
   echo Geno：你开启了SWAP功能，如果确认要关闭SWAP功能,请在一分钟之内再次运行此命令
   exit
 fi
-
+fi
 exit
+

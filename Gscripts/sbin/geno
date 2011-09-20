@@ -14,7 +14,7 @@ fi
 
 # start log
 echo "============================================" >> /system/log.txt
-echo `busybox date +%F" "%T` Boot X876 ... >> /system/log.txt
+echo `busybox date +%F" "%T` Boot phone ... >> /system/log.txt
 
 
 # permission
@@ -206,7 +206,7 @@ if [ -e /system/etc/enhanced.conf -a ! -e /system/etc/cpufreqing ]
 then
 MINFREQ=`busybox grep MINFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
 MAXFREQ=`busybox grep MAXFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
-for CPUFREQ in 122880 201600 245760 320000 403200 480000 604800 614400 633600 652800 691200 710400 729600 748800 768000
+for CPUFREQ in 122880 245760 320000 480000 600000 652800 672000 691200 710400 729600 748800 768000
 do
    ## Cpu min frequency
    if [ $MINFREQ = $CPUFREQ -a $MINFREQ -lt $MAXFREQ ]
