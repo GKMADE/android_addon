@@ -206,23 +206,16 @@ if [ -e /system/etc/enhanced.conf -a ! -e /system/etc/cpufreqing ]
 then
 MINFREQ=`busybox grep MINFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
 MAXFREQ=`busybox grep MAXFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
-for CPUFREQ in 122880 245760 320000 480000 600000 652800 672000 691200 710400 729600 748800 768000
-do
    ## Cpu min frequency
-   if [ $MINFREQ = $CPUFREQ -a $MINFREQ -lt $MAXFREQ ]
+   if [ $MINFREQ -lt $MAXFREQ ]
    then
    echo $MINFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
    busybox touch /system/etc/cpufreqing
    echo cpu minfreq $MINFREQ... >> /system/log.txt
-   fi
-   ## Cpu max frequency
-   if [ $MAXFREQ = $CPUFREQ -a $MINFREQ -lt $MAXFREQ ]
-   then
    echo $MAXFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
    busybox touch /system/etc/cpufreqing
    echo cpu maxfreq $MAXFREQ... >> /system/log.txt
    fi
-done
 fi
 
 

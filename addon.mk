@@ -4,7 +4,6 @@ PRODUCT_COPY_FILES += \
     addon/app/RootExplorer.apk:system/app/RootExplorer.apk \
     addon/app/SystemInfoPro.apk:system/app/SystemInfoPro.apk \
     addon/app/GoMarket.apk:system/app/GoMarket.apk \
-    addon/etc/enhanced_c8800.conf:system/etc/enhanced.conf \
     addon/etc/gps.conf:system/etc/gps.conf \
 
 
