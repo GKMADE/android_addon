@@ -29,3 +29,14 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     addon/Gapp-addon/com.google.android.maps.xml:system/etc/permissions/com.google.android.maps.xml \
     addon/Gapp-addon/com.google.android.maps.jar:system/framework/com.google.android.maps.jar \
+
+# Default ringtone
+PRODUCT_COPY_FILES += \
+    addon/media/audio/notifications/Facebook_pop.ogg:system/media/audio/notifications/Facebook_pop.ogg \
+    addon/media/audio/alarms/Musicbox_alarm.ogg:system/media/audio/alarms/Musicbox_alarm.ogg \
+    addon/media/audio/ringtone/Ringbellring.ogg:system/media/audio/ringtone/Ringbellring.ogg \
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.config.notification_sound=Facebook_pop.ogg \
+    ro.config.alarm_alert=Musicbox_alarm.ogg \
+    ro.config.ringtone=Ringbellring.ogg \
