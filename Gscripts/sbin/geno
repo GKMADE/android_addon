@@ -14,16 +14,8 @@ fi
 
 # start log
 echo "============================================" >> /system/log.txt
-echo `busybox date +%F" "%T` Boot phone ... >> /system/log.txt
+echo `busybox date +%F" "%T` Boot X876 ... >> /system/log.txt
 
-
-# permission
-chmod 777 /sbin/gk/1-app2sd.sh
-chmod 777 /sbin/gk/2-data2ext.sh
-chmod 777 /sbin/gk/3-swap.sh
-chmod 777 /sbin/gk/4-optimize.sh
-chmod 777 /sbin/gk/5-backup.sh
-chmod 777 /sbin/gk/6-restore.sh
 
 # read conf
 if [ -e /system/etc/enhanced.conf ]
@@ -31,8 +23,8 @@ then
 SDEXT=`busybox grep SDEXT /system/etc/enhanced.conf |busybox cut -d= -f2 `
 SDSWAP=`busybox grep SDSWAP /system/etc/enhanced.conf |busybox cut -d= -f2 `
 else
-SDEXT="mmcblk0p2"
-SDSWAP="mmcblk0p3"
+SDEXT="mmcblk1p2"
+SDSWAP="mmcblk1p3"
 fi
 
 #first mount app2sd
@@ -194,31 +186,46 @@ then
   fi
 fi
 
-# Cpu freq
 if [ -e /system/etc/enhanced.conf ]
 then
-GOVERNOR=`busybox grep GOVERNOR /system/etc/enhanced.conf |busybox cut -d= -f2 `
-echo $GOVERNOR > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-echo scaling governor $GOVERNOR... >> /system/log.txt
+  # Cpu freq
+  GOVERNOR=`busybox grep GOVERNOR /system/etc/enhanced.conf |busybox cut -d= -f2 `
+  echo $GOVERNOR > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+  echo scaling governor $GOVERNOR... >> /system/log.txt
+
+  if [ -e /system/etc/cpufreqing ]
+  then
+  MINFREQ=`busybox grep MINFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
+  MAXFREQ=`busybox grep MAXFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
+    ## Cpu min frequency
+    if [ $MINFREQ -lt $MAXFREQ ]
+    then
+    echo $MINFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+    busybox touch /system/etc/cpufreqing
+    echo cpu minfreq $MINFREQ... >> /system/log.txt
+    echo $MAXFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    busybox touch /system/etc/cpufreqing
+    echo cpu maxfreq $MAXFREQ... >> /system/log.txt
+    fi
+  fi
+
+  # VSYNC
+  VSYNC=`busybox grep VSYNC /system/etc/enhanced.conf |busybox cut -d= -f2 `
+  if [ $VSYNC = off ]
+  then
+  mount -t debugfs debugfs /sys/kernel/debug
+  echo '0' > /sys/kernel/debug/msm_fb/0/vsync_enable
+  echo MDP_VSYNC is disable... >> /system/log.txt
+  umount /sys/kernel/debug
+  fi
+
+  # IOSCHED
+  IOSCHED=`busybox grep IOSCHED /system/etc/enhanced.conf |busybox cut -d= -f2`
+  IOSCHEDADD=`busybox grep IOSCHEDADD /system/etc/enhanced.conf |busybox cut -d= -f2`
+  echo $IOSCHED >$IOSCHEDADD
+  echo IOSCHED is $IOSCHED... >> /system/log.txt
 fi
-
-if [ -e /system/etc/enhanced.conf -a ! -e /system/etc/cpufreqing ]
-then
-MINFREQ=`busybox grep MINFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
-MAXFREQ=`busybox grep MAXFREQ /system/etc/enhanced.conf |busybox cut -d= -f2 `
-   ## Cpu min frequency
-   if [ $MINFREQ -lt $MAXFREQ ]
-   then
-   echo $MINFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-   busybox touch /system/etc/cpufreqing
-   echo cpu minfreq $MINFREQ... >> /system/log.txt
-   echo $MAXFREQ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-   busybox touch /system/etc/cpufreqing
-   echo cpu maxfreq $MAXFREQ... >> /system/log.txt
-   fi
-fi
-
-
+  
 # flash recovery.img
 # if [ -e /system/recovery.img ]
 #then
@@ -227,6 +234,6 @@ fi
 #busybox rm -f /system/recovery.img
 #fi
 
-
 echo "============================================" >> /system/log.txt
 exit
+
