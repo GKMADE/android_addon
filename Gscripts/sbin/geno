@@ -14,7 +14,7 @@ fi
 
 # start log
 echo "============================================" >> /system/log.txt
-echo `busybox date +%F" "%T` Boot X876 ... >> /system/log.txt
+echo `busybox date +%F" "%T` Boot phone ... >> /system/log.txt
 
 
 # read conf
