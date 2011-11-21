@@ -221,8 +221,8 @@ then
 
   # IOSCHED
   IOSCHED=`busybox grep IOSCHED /system/etc/enhanced.conf |busybox cut -d= -f2`
-  IOSCHEDADD=`busybox grep IOSCHEDADD /system/etc/enhanced.conf |busybox cut -d= -f2`
-  echo $IOSCHED >$IOSCHEDADD
+  IOFSADD=`busybox grep IOFSADD /system/etc/enhanced.conf |busybox cut -d= -f2`
+  echo $IOSCHED >$IOFSADD
   echo IOSCHED is $IOSCHED... >> /system/log.txt
 fi
   
